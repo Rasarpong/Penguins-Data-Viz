@@ -1,0 +1,11 @@
+---
+title: "Penguins Data Viz"
+author: "Richard Acquah-Sarpong"
+date: "7/23/2022"
+output: html_document
+---
+
+```{r}
+data <- read.csv("penguins.csv")
+```
+
