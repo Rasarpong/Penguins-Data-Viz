@@ -7,5 +7,299 @@ output: html_document
 
 ```{r}
 data <- read.csv("penguins.csv")
+
+data$bill_ratio  <- data$bill_length_mm/data$bill_depth_mm
+
+data2 <- read.csv("crypto_cleaned.csv")
+data2$high_low_ratio <- (data2$high-data2$low)*10
+data2 <- data2[data2$high_low_ratio<10,]
+
+
+
+beans <- read.csv("labeled.csv")
+
+beans <- beans[beans$Class==c("SIRA", "CALI", "BOMBAY", "DERMASON"),]
+```
+
+```{r}
+library(ggplot2)
+library(ggdist)
+library(gghalves)
+library(ggthemes)
+library(viridis)
+```
+
+```{r}
+ggplot(data, aes(x=as.factor(species), y=bill_ratio)) + 
+
+  ggdist::stat_halfeye(adjust =.5, 
+                       width=.6,
+                       .width = 0,
+                       justification=-.4,
+                       aes(fill=species, alpha=.3),
+                       point_colour=NA) + 
+  
+  geom_boxplot(width=.3, outlier.shape = NA, aes(fill=species,color=species, alpha=.3)) +
+  
+    geom_jitter(width = .1, size=1, alpha=0.5,aes(color=species, alpha=.3)) +
+ # coord_cartesian(xlim=c(1.2, NA))
+  
+ # gghalves::geom_half_point(side="1", range_scale = .4) + 
+  
+ # geom_point(size=1.3) +
+  
+ # coord_cartesian(ylim=c(1.640, NA)) +
+    theme(legend.position = "none", 
+       axis.title = element_text(size = rel(0.8), family = "Cochin"),
+       axis.text = element_text(size=14, family = "Cochin"),
+       panel.background = element_rect(fill="white"),
+       axis.title.y = element_blank(),
+       panel.grid.major.x = element_line(linetype = 1, colour = "grey9", size = .1),
+       panel.grid.minor.x = element_line(linetype = 1, colour = "grey9", size = .1)) + 
+  coord_flip() 
+
+```
+
+```{r}
+ggplot(data, aes(x=as.factor(island), y=bill_ratio)) + 
+  ggdist::stat_halfeye(adjust =.5, 
+                       width=.6,
+                       .width = 0,
+                       justification=-.4,
+                       aes(fill=island, alpha=.3),
+                       point_colour=NA) + 
+  geom_boxplot(width=.3, outlier.shape = NA, aes(fill=island,color=island, alpha=.3)) +
+    geom_jitter(width = .1, size=1, alpha=0.5,aes(color=island, alpha=.3)) +
+      theme(legend.position = "none", 
+        axis.title = element_text(size = rel(0.8), family = "Cochin"),
+        axis.text = element_text(size=14, family = "Cochin"),
+        panel.background = element_rect(fill = "white"),
+        axis.title.y = element_blank(),
+        panel.grid.major.x = NULL,
+        panel.grid.minor = NULL) + 
+  coord_flip() 
+```
+```{r}
+ggplot(data2, aes(x=as.factor(currency), y=high_low_ratio)) + 
+  ggdist::stat_halfeye(adjust =.5, 
+                       width=.6,
+                       .width = 0,
+                       justification=-.4,
+                       aes(fill=currency, alpha=.3),
+                       point_colour=NA) + 
+  geom_boxplot(width=.3, outlier.shape = NA, aes(fill=currency,color=currency, alpha=.3)) +
+    geom_jitter(width = .1, size=1, alpha=0.5,aes(color=currency, alpha=.3)) +
+      theme(legend.position = "none", 
+        axis.title = element_text(size = rel(0.8), family = "Cochin"),
+        axis.text = element_text(size=14, family = "Cochin"),
+        panel.background = element_rect(fill = "white"),
+        axis.title.y = element_blank(),
+        panel.grid.major.x = NULL,
+        panel.grid.minor = NULL) + 
+  coord_flip() 
+```
+```{r}
+library(readxl)
+ctyfactbook2021 <- read_excel("ctyfactbook2021.xlsx")
+
+ctyfactbook2021 <- ctyfactbook2021[!is.na(ctyfactbook2021$PM2.5),]
+
+ff <- ctyfactbook2021[State=="Alabama" | State="Alaska",]
+```
+
+```{r}
+ggplot(beans, aes(x=Class, y=Area)) + 
+  ggdist::stat_halfeye(adjust =.5, 
+                       width=.6,
+                       .width = 0,
+                       justification=-.4,
+                       aes(fill=Class, alpha=.3),
+                       point_colour=NA) + 
+  geom_boxplot(width=.3, outlier.shape = NA, aes(fill=Class,color=Class, alpha=.3)) +
+  geom_jitter(width = .1, size=1, alpha=0.5,aes(color=Class, alpha=.3)) +
+  theme(legend.position = "none", 
+       axis.title = element_text(size = rel(0.8), family = "Cochin"),
+       axis.text = element_text(size=8, family = "Cochin"),
+       panel.background = element_rect(fill="white"),
+       axis.title.y = element_blank(),
+#       panel.grid.major.x = element_line(linetype = 1, colour = "grey9", size = .1),
+#       panel.grid.minor.x = element_line(linetype = 1, colour = "grey9", size = .1)) + 
+        panel.grid.major.x = NULL,
+        panel.grid.minor = NULL) +
+  coord_flip() 
+
+ggplot(beans, aes(x=Class, y=Perimeter)) + 
+  ggdist::stat_halfeye(adjust =.5, 
+                       width=.6,
+                       .width = 0,
+                       justification=-.4,
+                       aes(fill=Class, alpha=.3),
+                       point_colour=NA) + 
+  geom_boxplot(width=.3, outlier.shape = NA, aes(fill=Class,color=Class, alpha=.3)) +
+  geom_jitter(width = .1, size=1, alpha=0.5,aes(color=Class, alpha=.3)) +
+  theme(legend.position = "none", 
+       axis.title = element_text(size = rel(0.8), family = "Cochin"),
+       axis.text = element_text(size=8, family = "Cochin"),
+       panel.background = element_rect(fill="white"),
+       axis.title.y = element_blank(),
+#       panel.grid.major.x = element_line(linetype = 1, colour = "grey9", size = .1),
+#       panel.grid.minor.x = element_line(linetype = 1, colour = "grey9", size = .1)) + 
+          panel.grid.major.x = NULL,
+        panel.grid.minor = NULL) +
+  coord_flip()  
+
+
+
+ggplot(beans, aes(x=Class, y=MajorAxisLength)) + 
+  ggdist::stat_halfeye(adjust =.5, 
+                       width=.6,
+                       .width = 0,
+                       justification=-.4,
+                       aes(fill=Class, alpha=.3),
+                       point_colour=NA) + 
+  geom_boxplot(width=.3, outlier.shape = NA, aes(fill=Class,color=Class, alpha=.3)) +
+  geom_jitter(width = .1, size=1, alpha=0.5,aes(color=Class, alpha=.3)) +
+  theme(legend.position = "none", 
+       axis.title = element_text(size = rel(0.8), family = "Cochin"),
+       axis.text = element_text(size=8, family = "Cochin"),
+       panel.background = element_rect(fill="white"),
+       axis.title.y = element_blank(),
+#       panel.grid.major.x = element_line(linetype = 1, colour = "grey9", size = .1),
+#       panel.grid.minor.x = element_line(linetype = 1, colour = "grey9", size = .1)) + 
+          panel.grid.major.x = NULL,
+        panel.grid.minor = NULL) +
+  coord_flip() 
+
+
+
+
+
+ggplot(beans, aes(x=Class, y=MinorAxisLength)) + 
+  ggdist::stat_halfeye(adjust =.5, 
+                       width=.6,
+                       .width = 0,
+                       justification=-.4,
+                       aes(fill=Class, alpha=.3),
+                       point_colour=NA) + 
+  geom_boxplot(width=.3, outlier.shape = NA, aes(fill=Class,color=Class, alpha=.3)) +
+  geom_jitter(width = .1, size=1, alpha=0.5,aes(color=Class, alpha=.3)) +
+  theme(legend.position = "none", 
+       axis.title = element_text(size = rel(0.8), family = "Cochin"),
+       axis.text = element_text(size=8, family = "Cochin"),
+       panel.background = element_rect(fill="white"),
+       axis.title.y = element_blank(),
+#       panel.grid.major.x = element_line(linetype = 1, colour = "grey9", size = .1),
+#       panel.grid.minor.x = element_line(linetype = 1, colour = "grey9", size = .1)) + 
+          panel.grid.major.x = NULL,
+        panel.grid.minor = NULL) +
+  coord_flip() 
+
+
+
+
+
+
+ggplot(beans, aes(x=Class, y=Eccentricity)) + 
+  ggdist::stat_halfeye(adjust =.5, 
+                       width=.6,
+                       .width = 0,
+                       justification=-.4,
+                       aes(fill=Class, alpha=.3),
+                       point_colour=NA) + 
+  geom_boxplot(width=.3, outlier.shape = NA, aes(fill=Class,color=Class, alpha=.3)) +
+  geom_jitter(width = .1, size=1, alpha=0.5,aes(color=Class, alpha=.3)) +
+  theme(legend.position = "none", 
+       axis.title = element_text(size = rel(0.8), family = "Cochin"),
+       axis.text = element_text(size=8, family = "Cochin"),
+       panel.background = element_rect(fill="white"),
+       axis.title.y = element_blank(),
+#       panel.grid.major.x = element_line(linetype = 1, colour = "grey9", size = .1),
+#       panel.grid.minor.x = element_line(linetype = 1, colour = "grey9", size = .1)) + 
+          panel.grid.major.x = NULL,
+        panel.grid.minor = NULL) +
+  coord_flip() 
+
+
+
+
+
+ggplot(beans, aes(x=Class, y=ConvexArea)) + 
+  ggdist::stat_halfeye(adjust =.5, 
+                       width=.6,
+                       .width = 0,
+                       justification=-.4,
+                       aes(fill=Class, alpha=.3),
+                       point_colour=NA) + 
+  geom_boxplot(width=.3, outlier.shape = NA, aes(fill=Class,color=Class, alpha=.3)) +
+  geom_jitter(width = .1, size=1, alpha=0.5,aes(color=Class, alpha=.3)) +
+  theme(legend.position = "none", 
+       axis.title = element_text(size = rel(0.8), family = "Cochin"),
+       axis.text = element_text(size=8, family = "Cochin"),
+       panel.background = element_rect(fill="white"),
+#       axis.title.y = element_blank(),
+#       panel.grid.major.x = element_line(linetype = 1, colour = "grey9", size = .1),
+#       panel.grid.minor.x = element_line(linetype = 1, colour = "grey9", size = .1)) + 
+          panel.grid.major.x = NULL,
+        panel.grid.minor = NULL) +
+  coord_flip() 
+
+
+
+
+
+
+
+ggplot(beans, aes(x=Class, y=Extent)) + 
+  ggdist::stat_halfeye(adjust =.5, 
+                       width=.6,
+                       .width = 0,
+                       justification=-.4,
+                       aes(fill=Class, alpha=.3),
+                       point_colour=NA) + 
+  geom_boxplot(width=.3, outlier.shape = NA, aes(fill=Class,color=Class, alpha=.3)) +
+  geom_jitter(width = .1, size=1, alpha=0.5,aes(color=Class, alpha=.3)) +
+  theme(legend.position = "none", 
+       axis.title = element_text(size = rel(0.8), family = "Cochin"),
+       axis.text = element_text(size=8, family = "Cochin"),
+       panel.background = element_rect(fill="white"),
+       axis.title.y = element_blank(),
+#       panel.grid.major.x = element_line(linetype = 1, colour = "grey9", size = .1),
+#       panel.grid.minor.x = element_line(linetype = 1, colour = "grey9", size = .1)) + 
+          panel.grid.major.x = NULL,
+        panel.grid.minor = NULL) +
+  coord_flip() 
+
+
+mean(beans[beans$Class=="BOMBAY", "Perimeter"])
+mean(beans[beans$Class=="CALI", "Perimeter"])
+```
+```{r}
+nhanes <- read.csv("nhanesDatathon.csv")
+nhanes_data <- nhanes[, c("RIAGENDR", "BMXBMI")]
+names(nhanes_data) <- c("gender", "inc_pov_ratio") 
+nhanes_data$inc_pov_ratio <- as.numeric(nhanes_data$inc_pov_ratio)
+nhanes_data$gender <- as.factor(nhanes_data$gender)
+nhanes_data <- na.omit(nhanes_data)
+```
+```{r}
+ggplot(nhanes_data[1:2000,], aes(x=gender, y=inc_pov_ratio)) + 
+  ggdist::stat_halfeye(adjust =.5, 
+                       width=.6,
+                       .width = 0,
+                       justification=-.4,
+                       aes(fill=gender, alpha=.3),
+                       point_colour=NA) + 
+  geom_boxplot(width=.3, outlier.shape = NA, aes(fill=gender,color=gender, alpha=.3)) +
+  geom_jitter(width = .1, size=1, alpha=0.5,aes(color=gender, alpha=.3)) +
+  theme(legend.position = "none", 
+       axis.title = element_text(size = rel(0.8), family = "Cochin"),
+       axis.text = element_text(size=8, family = "Cochin"),
+       panel.background = element_rect(fill="white"),
+       axis.title.y = element_blank(),
+#       panel.grid.major.x = element_line(linetype = 1, colour = "grey9", size = .1),
+#       panel.grid.minor.x = element_line(linetype = 1, colour = "grey9", size = .1)) + 
+          panel.grid.major.x = NULL,
+        panel.grid.minor = NULL) +
+  coord_flip() 
 ```
 
